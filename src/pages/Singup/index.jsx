@@ -5,15 +5,20 @@ import {
   Button,
   TextField,
   Typography,
-
   CssBaseline,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import validations from '../../utils/validations';
+import { singup } from '../../service/user';
+import { addUser } from '../../redux/reducer/userSlice';
 
 function Singup() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [input, setInput] = useState({
     email: '',
     password: '',
@@ -33,6 +38,12 @@ function Singup() {
     if (input.email && input.password && input.repeatPassword) {
       if (validations.isEmail(input.email)) {
         if (input.password === input.repeatPassword) {
+          singup({ email: input.email, password: input.password }).then((data) => {
+            dispatch(addUser(data));
+            navigate('/products');
+          }).catch((err) => {
+            Swal.fire('Error!', err.response.data.msg, 'error');
+          });
           setInput({ email: '', password: '', repeatPassword: '' });
         } else {
           Swal.fire('Error!', 'Passwords do not match', 'error');

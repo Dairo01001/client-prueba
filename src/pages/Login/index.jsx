@@ -11,9 +11,15 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { login } from '../../service/user';
+import { addUser } from '../../redux/reducer/userSlice';
+import { getAllProducts } from '../../service/product';
+import { addAllProducts } from '../../redux/reducer/productSlice';
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [input, setInput] = useState({
     email: '',
     password: '',
@@ -22,8 +28,16 @@ function Login() {
   const handleOnSubmit = (e) => {
     e.preventDefault();
     if (input.email && input.password) {
-      setInput({ email: '', password: '' });
-      navigate('/admin');
+      login(input).then((user) => {
+        dispatch(addUser(user));
+        getAllProducts().then((products) => {
+          dispatch(addAllProducts(products));
+        });
+        setInput({ email: '', password: '' });
+        navigate('/products');
+      }).catch((err) => {
+        Swal.fire('Error!', err.response.data.msg, 'error');
+      });
     } else {
       Swal.fire('Error!', 'Rellena los campos!', 'error');
     }
