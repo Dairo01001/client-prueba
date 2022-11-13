@@ -1,38 +1,47 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import InputIcon from '@mui/icons-material/Input';
+import OutputIcon from '@mui/icons-material/Output';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { removeUser } from '../../redux/reducer/userSlice';
 
-function Products() {
+function Nav() {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!user) {
-      Swal.fire('Error!', 'Nesecitas estar logueado para ver los productos', 'error');
-      navigate('/');
-    }
-  });
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button startIcon={<FormatListBulletedIcon />} onClick={() => navigate('/')} color="inherit">
             Products
-          </Typography>
-          <Button onClick={() => dispatch(removeUser())} color="inherit">logout</Button>
+          </Button>
+          {!user ? null
+            : (
+              <Button startIcon={<AddBoxIcon />} onClick={() => navigate('/register')} color="inherit">
+                Crear
+              </Button>
+            ) }
+          {!user ? (
+            <Button endIcon={<InputIcon />} onClick={() => navigate('/login')} color="inherit">
+              login
+            </Button>
+          ) : (
+            <Button endIcon={<OutputIcon />} onClick={() => dispatch(removeUser())} color="inherit">
+              logout
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
   );
 }
 
-export default Products;
+export default Nav;

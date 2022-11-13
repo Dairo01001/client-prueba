@@ -1,11 +1,23 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProductCart from '../ProductCart';
+import { getAllProducts } from '../../service/product';
+import { addAllProducts } from '../../redux/reducer/productSlice';
 
 export default function ProductList() {
   const products = useSelector((state) => state.products.products);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    getAllProducts().then((data) => {
+      dispatch(addAllProducts(data));
+    });
+  }, []);
+
+  if (products.length === 0) {
+    return <h1>No Hay productos</h1>;
+  }
 
   return (
     <Box display="flex" flexDirection="column" marginTop="15px" sx={{ flexGrow: 1 }}>

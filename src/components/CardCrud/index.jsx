@@ -10,13 +10,17 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
-import ShareIcon from '@mui/icons-material/Share';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { deleteProduct } from '../../service/product';
 
 export default function CardCrud({
-  image, description, title, price,
+  image, description, title, price, id, token,
 }) {
+  const navigate = useNavigate();
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
@@ -26,7 +30,7 @@ export default function CardCrud({
           </Avatar>
         )}
         action={(
-          <IconButton aria-label="settings">
+          <IconButton onClick={() => navigate(`/product/edit/${id}`)} aria-label="edit">
             <EditIcon />
           </IconButton>
         )}
@@ -45,11 +49,32 @@ export default function CardCrud({
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="delete">
+        <IconButton
+          onClick={() => {
+            Swal.fire({
+              title: 'Estas seguro?',
+              text: 'Quieres eliminar este producto!',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Si, Borrarlo!',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                deleteProduct(id, token).then(() => {
+                  Swal.fire(
+                    'Borrado!',
+                    'El producto ha sido borrado',
+                    'success',
+                  );
+                  navigate('/');
+                });
+              }
+            });
+          }}
+          aria-label="delete"
+        >
           <DeleteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
         </IconButton>
       </CardActions>
     </Card>

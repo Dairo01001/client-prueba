@@ -34,7 +34,7 @@ function Login() {
           dispatch(addAllProducts(products));
         });
         setInput({ email: '', password: '' });
-        navigate('/products');
+        navigate('/');
       }).catch((err) => {
         Swal.fire('Error!', err.response.data.msg, 'error');
       });

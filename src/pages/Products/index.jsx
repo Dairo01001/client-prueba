@@ -1,11 +1,11 @@
 import React from 'react';
+import Nav from '../../components/AppBar';
 import ProductList from '../../components/ProductList';
-import AppBar from '../../components/AppBar';
 
 function Products() {
   return (
     <>
-      <AppBar />
+      <Nav />
       <ProductList />
     </>
   );

@@ -40,9 +40,10 @@ function Singup() {
         if (input.password === input.repeatPassword) {
           singup({ email: input.email, password: input.password }).then((data) => {
             dispatch(addUser(data));
-            navigate('/products');
+            navigate('/');
           }).catch((err) => {
             Swal.fire('Error!', err.response.data.msg, 'error');
+            navigate('/');
           });
           setInput({ email: '', password: '', repeatPassword: '' });
         } else {
